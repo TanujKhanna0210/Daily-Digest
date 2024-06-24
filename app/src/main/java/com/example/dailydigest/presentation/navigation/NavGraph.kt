@@ -1,4 +1,4 @@
-package com.example.dailydigest.navigation
+package com.example.dailydigest.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost

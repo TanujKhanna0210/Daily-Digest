@@ -1,4 +1,4 @@
-package com.example.dailydigest.navigation
+package com.example.dailydigest.presentation.navigation
 
 sealed class Route(
     val route: String

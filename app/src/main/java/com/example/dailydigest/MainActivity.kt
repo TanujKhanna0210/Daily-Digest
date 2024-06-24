@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.dailydigest.navigation.NavGraph
-import com.example.dailydigest.navigation.Route
+import com.example.dailydigest.presentation.navigation.NavGraph
+import com.example.dailydigest.presentation.navigation.Route
 import com.example.dailydigest.ui.theme.DailyDigestTheme
 import dagger.hilt.android.AndroidEntryPoint
 

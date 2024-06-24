@@ -1,4 +1,4 @@
-package com.example.dailydigest.navigation
+package com.example.dailydigest.presentation.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,15 +11,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.dailydigest.R
+import com.example.dailydigest.domain.model.Article
+import com.example.dailydigest.presentation.home.HomeScreen
+import com.example.dailydigest.presentation.home.HomeViewModel
 import com.example.dailydigest.presentation.screens.BookmarkScreen
 import com.example.dailydigest.presentation.screens.DetailsScreen
-import com.example.dailydigest.presentation.screens.HomeScreen
 import com.example.dailydigest.presentation.screens.SearchScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,7 +96,23 @@ fun NewsNavigator() {
             modifier = Modifier.padding(bottom = bottomPadding)
         ) {
             composable(route = Route.HomeScreen.route) {
-                HomeScreen()
+                val viewModel: HomeViewModel = hiltViewModel()
+                val articles = viewModel.news.collectAsLazyPagingItems()
+                HomeScreen(
+                    articles = articles,
+                    navigateToSearch = {
+                        navigateToTab(
+                            navController = navController,
+                            route = Route.SearchScreen.route
+                        )
+                    },
+                    navigateToDetails = { article ->
+                        navigateToDetails(
+                            navController = navController,
+                            article = article
+                        )
+                    }
+                )
             }
 
             composable(route = Route.SearchScreen.route) {
@@ -120,6 +140,13 @@ private fun navigateToTab(navController: NavController, route: String) {
             launchSingleTop = true
         }
     }
+}
+
+private fun navigateToDetails(navController: NavController, article: Article) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
+    navController.navigate(
+        route = Route.DetailsScreen.route
+    )
 }
 
 

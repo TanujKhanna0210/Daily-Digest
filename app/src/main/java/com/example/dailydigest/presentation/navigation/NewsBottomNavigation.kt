@@ -1,4 +1,4 @@
-package com.example.dailydigest.navigation
+package com.example.dailydigest.presentation.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Column
