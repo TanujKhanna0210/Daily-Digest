@@ -1,5 +1,6 @@
 package com.example.dailydigest.presentation.navigation
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -22,7 +24,9 @@ import com.example.dailydigest.R
 import com.example.dailydigest.domain.model.Article
 import com.example.dailydigest.presentation.bookmark.BookmarkScreen
 import com.example.dailydigest.presentation.bookmark.BookmarkViewModel
+import com.example.dailydigest.presentation.details.DetailsEvent
 import com.example.dailydigest.presentation.details.DetailsScreen
+import com.example.dailydigest.presentation.details.DetailsViewModel
 import com.example.dailydigest.presentation.home.HomeScreen
 import com.example.dailydigest.presentation.home.HomeViewModel
 import com.example.dailydigest.presentation.search.SearchScreen
@@ -133,7 +137,19 @@ fun NewsNavigator() {
             }
 
             composable(route = Route.DetailsScreen.route) {
-                DetailsScreen()
+                val viewModel: DetailsViewModel = hiltViewModel()
+                if (viewModel.sideEffect != null) {
+                    Toast.makeText(LocalContext.current, viewModel.sideEffect, Toast.LENGTH_SHORT)
+                        .show()
+                    viewModel.onEvent(DetailsEvent.RemoveSideEffect)
+                }
+                navController.previousBackStackEntry?.savedStateHandle?.get<Article>("article")
+                    ?.let { article ->
+                        DetailsScreen(
+                            article = article,
+                            event = viewModel::onEvent,
+                            navigateUp = { navController.navigateUp() })
+                    }
             }
 
             composable(route = Route.BookmarkScreen.route) {
