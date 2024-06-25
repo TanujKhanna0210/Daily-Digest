@@ -21,6 +21,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.dailydigest.R
 import com.example.dailydigest.domain.model.Article
 import com.example.dailydigest.presentation.bookmark.BookmarkScreen
+import com.example.dailydigest.presentation.bookmark.BookmarkViewModel
 import com.example.dailydigest.presentation.details.DetailsScreen
 import com.example.dailydigest.presentation.home.HomeScreen
 import com.example.dailydigest.presentation.home.HomeViewModel
@@ -136,7 +137,14 @@ fun NewsNavigator() {
             }
 
             composable(route = Route.BookmarkScreen.route) {
-                BookmarkScreen()
+                val viewModel: BookmarkViewModel = hiltViewModel()
+                val state = viewModel.state.value
+                BookmarkScreen(state = state, navigateToDetails = { article ->
+                    navigateToDetails(
+                        navController = navController,
+                        article = article
+                    )
+                })
             }
         }
     }
