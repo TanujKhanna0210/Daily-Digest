@@ -1,6 +1,5 @@
-package com.example.dailydigest.presentation.home
+package com.example.dailydigest.presentation.search
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,45 +8,44 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.dailydigest.domain.model.Article
 import com.example.dailydigest.presentation.common.ArticlesList
 import com.example.dailydigest.presentation.common.SearchBar
 import com.example.dailydigest.util.Dimens.MediumPadding1
 
 @Composable
-fun HomeScreen(
-    articles: LazyPagingItems<Article>,
-    navigateToSearch: () -> Unit,
+fun SearchScreen(
+    state: SearchState,
+    event: (SearchEvent) -> Unit,
     navigateToDetails: (Article) -> Unit
 ) {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top = MediumPadding1)
+            .padding(
+                start = MediumPadding1,
+                top = MediumPadding1,
+                end = MediumPadding1
+            )
             .statusBarsPadding()
+            .fillMaxSize()
     ) {
 
-        SearchBar(
-            modifier = Modifier.padding(horizontal = MediumPadding1),
-            text = "",
-            readOnly = true,
-            onValueChange = {},
-            onClick = {
-                navigateToSearch()
+        SearchBar(text = state.searchQuery,
+            readOnly = false,
+            onValueChange = {
+                event(SearchEvent.UpdateSearchQuery(it))
             },
-            onSearch = {}
+            onSearch = { event(SearchEvent.SearchNews) }
         )
 
         Spacer(modifier = Modifier.height(MediumPadding1))
 
-        ArticlesList(
-            modifier = Modifier.padding(horizontal = MediumPadding1),
-            articles = articles,
-            onClick = {
-                navigateToDetails(it)
-            }
-        )
+        state.articles?.let {
+            val articles = it.collectAsLazyPagingItems()
+            ArticlesList(articles = articles, onClick = { navigateToDetails(it) })
+        }
     }
+
 }

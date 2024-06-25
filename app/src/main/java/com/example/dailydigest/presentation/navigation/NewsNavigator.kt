@@ -20,11 +20,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.dailydigest.R
 import com.example.dailydigest.domain.model.Article
+import com.example.dailydigest.presentation.bookmark.BookmarkScreen
+import com.example.dailydigest.presentation.details.DetailsScreen
 import com.example.dailydigest.presentation.home.HomeScreen
 import com.example.dailydigest.presentation.home.HomeViewModel
-import com.example.dailydigest.presentation.screens.BookmarkScreen
-import com.example.dailydigest.presentation.screens.DetailsScreen
-import com.example.dailydigest.presentation.screens.SearchScreen
+import com.example.dailydigest.presentation.search.SearchScreen
+import com.example.dailydigest.presentation.search.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,7 +117,18 @@ fun NewsNavigator() {
             }
 
             composable(route = Route.SearchScreen.route) {
-                SearchScreen()
+                val viewModel: SearchViewModel = hiltViewModel()
+                val state = viewModel.state.value
+                SearchScreen(
+                    state = state,
+                    event = viewModel::onEvent,
+                    navigateToDetails = {
+                        navigateToDetails(
+                            navController = navController,
+                            article = it
+                        )
+                    }
+                )
             }
 
             composable(route = Route.DetailsScreen.route) {

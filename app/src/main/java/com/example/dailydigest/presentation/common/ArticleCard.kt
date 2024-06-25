@@ -73,7 +73,11 @@ fun ArticleCard(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = article.source.name,
+                    text = if (article.source.name.length > 14) {
+                        article.source.name.substring(0, 14) + "..."
+                    } else {
+                    article.source.name
+                },
                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                     color = colorResource(
                         id = R.color.body
@@ -93,7 +97,7 @@ fun ArticleCard(
                 Spacer(modifier = Modifier.width(ExtraSmallPadding2))
 
                 Text(
-                    text = article.publishedAt,
+                    text = article.publishedAt.substringBefore('T'),
                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                     color = colorResource(
                         id = R.color.body
